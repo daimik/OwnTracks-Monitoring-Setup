@@ -19,4 +19,4 @@ Repository Contents
 
       owntracks_to_influx.ps1: PowerShell script to push OwnTracks data to your InfluxDB v2 instance.
 
-      grafana_dashboard.json: Pre-made Grafana dashboard for visualizing location data.
+      Grafana-Dashboard.json: Pre-made Grafana dashboard for visualizing location data.
