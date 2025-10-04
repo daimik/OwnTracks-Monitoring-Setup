@@ -9,7 +9,7 @@ This repository provides a setup for monitoring location data from the OwnTracks
 
       A pre-configured Grafana dashboard for visualizing locations and movement trends
 
-Note: You must already have self-hosted InfluxDB v2 and Grafana servers running. This setup does not deploy them.
+Note: You must already have self-hosted VPN, InfluxDB v2 and Grafana servers running. This setup does not deploy them.
 
 Repository Contents
 
