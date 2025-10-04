@@ -1,0 +1,35 @@
+services:
+  otrecorder:
+    container_name: owntracks-server
+    image: owntracks/recorder
+    networks:
+      - network2
+    ports:
+      - 8083:8083
+    volumes:
+      - config:/config
+      - store:/store
+    restart: unless-stopped
+    environment:
+      OTR_PORT: 0
+
+  owntracks-tracker:
+    image: mcr.microsoft.com/powershell:latest
+    container_name: owntracks-exporter-ps1
+    restart: always
+    networks:
+      - network2
+    volumes:
+      - scripts:/scripts
+    entrypoint: pwsh scripts/owntracks_to_influx.ps1
+
+
+volumes:
+  scripts: {}
+  store: {}
+  config: {}
+
+networks:
+  network2:
+    name: services
+    external: true
