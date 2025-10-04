@@ -1,5 +1,3 @@
-# OwnTracks-Monitoring-Setup
-
 OwnTracks Monitoring Setup (HTTP)
 Overview
 
