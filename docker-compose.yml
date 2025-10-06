@@ -1,34 +1,78 @@
+
 services:
-  otrecorder:
-    container_name: owntracks-server
-    image: owntracks/recorder
+  auth-proxy:
+    container_name: auth-proxy
+    image: beevelop/nginx-basic-auth:v2025.08.1
+    restart: unless-stopped
+    depends_on:
+      - otrecorder
+    ports:
+      - "8099:80"
+    volumes:
+      - nginx:/etc/nginx:ro
+    environment:
+      # Forward requests to the OwnTracks recorder
+      FORWARD_HOST: otrecorder
+      FORWARD_PORT: 8083
     networks:
       - network2
-    ports:
-      - 8083:8083
+    # ---------------------------------------------------
+    # Authentication details:
+    # Username: ***
+    # Password: ***
+    #
+    # Password hash stored in:
+    # /var/lib/docker/volumes/owntracks-server_nginx/_data/auth.htpasswd
+    #
+    # Example htpasswd entry (redacted):
+    # <username>:<password>
+    #
+    # To generate a new user entry:
+    # htpasswd -nb <username> '<password>'
+    # ---------------------------------------------------
+
+  otrecorder:
+    container_name: owntracks-server
+    image: owntracks/recorder:1.0.1
+    restart: unless-stopped
+    networks:
+      - network2
+    # Uncomment below if direct access to the recorder is needed
+    # ports:
+    #   - "8083:8083"
     volumes:
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
       - config:/config
       - store:/store
-    restart: unless-stopped
     environment:
       OTR_PORT: 0
+      TZ: Europe/Amsterdam
 
   owntracks-tracker:
-    image: mcr.microsoft.com/powershell:latest
     container_name: owntracks-exporter-ps1
-    restart: always
+    image: mcr.microsoft.com/powershell:7.5-ubuntu-24.04
+    restart: unless-stopped
+    depends_on:
+      - otrecorder
     networks:
       - network2
     volumes:
       - scripts:/scripts
-    entrypoint: pwsh scripts/owntracks_to_influx.ps1
+    entrypoint: pwsh /scripts/owntracks_to_influx.ps1
 
-
+# -----------------------------------------------------------------
+# Volumes
+# -----------------------------------------------------------------
 volumes:
   scripts: {}
   store: {}
   config: {}
+  nginx: {}
 
+# -----------------------------------------------------------------
+# Network Configuration
+# -----------------------------------------------------------------
 networks:
   network2:
     name: services
