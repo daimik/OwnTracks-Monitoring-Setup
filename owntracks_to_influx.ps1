@@ -8,7 +8,7 @@ $Org = ""
 $Token = "API Key"
 
 # OwnTracks API endpoint and credentials
-$OwnTracksURL = "http://IP:8083/api/0/last"
+$OwnTracksURL = "http://otrecorder:8083/api/0/last"
 $User = ""
 $Device = ""
 
@@ -142,4 +142,5 @@ while ($true) {
     # 10. Wait before fetching the next location
     # --------------------------------------------------
     Start-Sleep -Seconds $SleepSeconds
+
 }
